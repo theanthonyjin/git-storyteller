@@ -24,7 +24,7 @@ Examples:
   git-storyteller insights
 
 Configuration: ~/.config/git-storyteller/config.yaml
-Repository: https://github.com/theanthonyjin/git-storyteller
+Repository: GitHub: theanthonyjin/git-storyteller
     """)
 
 

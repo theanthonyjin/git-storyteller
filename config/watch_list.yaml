@@ -2,6 +2,100 @@
 # Repositories to monitor for social media content
 
 watched_repos:
+  # AI Agent Core (High Traffic & Engagement)
+  - name: OpenClaw
+    owner: OpenClaw
+    url: https://github.com/OpenClaw/OpenClaw
+    enabled: true
+    platforms:
+      - twitter
+    template: carbon_x
+    description: Most popular open-source AI agent. Focus: New tool integrations, long-task success rate improvements.
+    tags: [ai-agent, featured]
+
+  - name: mcp
+    owner: anthropics
+    url: https://github.com/anthropics/mcp
+    enabled: true
+    platforms:
+      - twitter
+    template: bento_metrics
+    description: Our underlying protocol - official updates carry authoritative traffic. Focus: New standards, protocol changes, official ecosystem updates.
+    tags: [mcp, protocol, featured]
+
+  - name: cline
+    owner: cline
+    url: https://github.com/cline/cline
+    enabled: true
+    platforms:
+      - twitter
+    template: carbon_x
+    description: Hottest open-source AI coding assistant (formerly Claude Dev). Focus: New provider support, major UI updates.
+    tags: [ai-agent, coding, featured]
+
+  # MCP Ecosystem (Developer Workflow Integration)
+  - name: servers
+    owner: modelcontextprotocol
+    url: https://github.com/modelcontextprotocol/servers
+    enabled: true
+    platforms:
+      - twitter
+    template: carbon_x
+    description: Official MCP server collection. Focus: New server tools (Google Maps, Slack integrations).
+    tags: [mcp, ecosystem]
+
+  - name: fastmcp
+    owner: jlongster
+    url: https://github.com/jlongster/fastmcp
+    enabled: true
+    platforms:
+      - twitter
+    template: carbon_x
+    description: Our Python framework. Focus: Performance optimizations, new decorator syntax.
+    tags: [mcp, framework]
+
+  - name: awesome-mcp-servers
+    owner: punkpeye
+    url: https://github.com/punkpeye/awesome-mcp-servers
+    enabled: true
+    platforms:
+      - twitter
+    template: carbon_x
+    description: Community's most comprehensive MCP list. Focus: Discovering interesting third-party servers.
+    tags: [mcp, community]
+
+  # Infrastructure & LLM (Professional Credibility)
+  - name: DeepSeek-V3
+    owner: deepseek-ai
+    url: https://github.com/deepseek-ai/DeepSeek-V3
+    enabled: true
+    platforms:
+      - twitter
+    template: bento_metrics
+    description: Top-tier model with global attention. Focus: Performance benchmarks, new model releases.
+    tags: [llm, featured]
+
+  - name: ollama
+    owner: ollama
+    url: https://github.com/ollama/ollama
+    enabled: true
+    platforms:
+      - twitter
+    template: bento_metrics
+    description: Standard for local LLM execution. Focus: New model support, concurrency performance improvements.
+    tags: [infrastructure, llm]
+
+  - name: vllm
+    owner: vllm-project
+    url: https://github.com/vllm-project/vllm
+    enabled: true
+    platforms:
+      - twitter
+    template: carbon_x
+    description: High-concurrency inference framework with strong engineering appeal. Focus: Throughput optimizations, new model support.
+    tags: [infrastructure, featured]
+
+  # Self-Project
   - name: git-storyteller
     owner: theanthonyjin
     url: https://github.com/theanthonyjin/git-storyteller
@@ -10,3 +104,4 @@ watched_repos:
       - twitter
     template: bento_metrics
     description: AI-native marketing agent for developers. Turn commits into viral updates.
+    tags: [self]
