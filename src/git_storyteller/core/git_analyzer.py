@@ -235,10 +235,8 @@ class GitAnalyzer:
         for commit in recent:
             msg = commit.message.lower()
 
-            # Only extract REAL, specific changes (not generic)
-            if 'testing' in msg and 'github' in msg:
-                real_changes.append("✅ GitHub Actions CI/CD")
-            elif 'mcp' in msg:
+            # Only extract REAL, specific functionality changes (not infrastructure/tooling)
+            if 'mcp' in msg:
                 real_changes.append("🔌 MCP integration")
             elif 'browser' in msg or 'playwright' in msg:
                 real_changes.append("🎭 Browser automation")
@@ -252,6 +250,12 @@ class GitAnalyzer:
                 real_changes.append("🗄️ Database layer")
             elif 'ui' in msg or 'frontend' in msg:
                 real_changes.append("💄 UI improvements")
+            elif 'chat' in msg or 'message' in msg:
+                real_changes.append("💬 Chat features")
+            elif 'search' in msg:
+                real_changes.append("🔍 Search functionality")
+            elif 'export' in msg or 'download' in msg:
+                real_changes.append("📥 Export features")
 
         # Build the tweet - eyecatching style
         tweet_lines = []
@@ -264,8 +268,8 @@ class GitAnalyzer:
 
         tweet_lines.append("")
 
-        # What it does - merged with tech stack
-        tweet_lines.append(f"Turn commits into viral content with AI automation. Built with FastMCP + Playwright + GitPython.")
+        # What it does - single line
+        tweet_lines.append("Turn commits into viral updates with AI-powered marketing automation.")
 
         tweet_lines.append("")
 

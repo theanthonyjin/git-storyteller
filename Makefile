@@ -1,11 +1,14 @@
 .PHONY: install install-dev test lint type-check format format-check clean clean-cache build publish help
 
-# Force Python 3.12
-PYTHON_EXE := /Users/anthony/.local/bin/python3.12
-
-PYTHON_CHECK := $(shell command -v $(PYTHON_EXE) 2>/dev/null)
-ifeq ($(strip $(PYTHON_CHECK)),)
-    $(error Python 3.12 is required. Current system: $(shell python3 --version 2>&1). Please install Python 3.12.)
+# Force Python 3.12 - use python3 in CI, python3.12 locally
+ifeq ($(CI),true)
+    PYTHON_EXE := python3
+else
+    PYTHON_EXE := python3.12
+    PYTHON_CHECK := $(shell command -v $(PYTHON_EXE) 2>/dev/null)
+    ifeq ($(strip $(PYTHON_CHECK)),)
+        $(error Python 3.12 is required. Current system: $(shell python3 --version 2>&1). Please install Python 3.12.)
+    endif
 endif
 
 # Install package in editable mode
