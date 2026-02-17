@@ -1,5 +1,4 @@
 """Configuration management for git-storyteller."""
-import os
 from pathlib import Path
 from typing import Optional
 
@@ -53,8 +52,8 @@ class Config:
             },
             "social": {
                 "twitter": {
-                    "enabled": False,
-                    "scheduled_at": None,  # "09:00" for 9 AM
+                    "enabled": True,
+                    "scheduled_at": "09:00",  # "09:00" for 9 AM
                 },
                 "linkedin": {
                     "enabled": False,

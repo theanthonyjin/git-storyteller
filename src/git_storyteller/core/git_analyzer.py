@@ -1,10 +1,8 @@
 """Git repository analyzer for understanding code semantics."""
-import os
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
-from urllib.parse import urlparse
 
 import git
 from tree_sitter import Language, Parser
@@ -126,7 +124,7 @@ class GitAnalyzer:
                 author=commit.author.name,
                 message=commit.message.strip(),
                 date=commit.committed_datetime.isoformat(),
-                files_changed=[item.a_path for item in commit.diff().items],
+                files_changed=[item.a_path for item in commit.diff()],
                 diff_summary=self._get_diff_summary(commit),
                 semantic_impact=self._analyze_semantic_impact(commit),
             )
@@ -220,6 +218,79 @@ class GitAnalyzer:
             hooks.append(f"💪 {len(commits)} commits pushing the codebase forward")
 
         return hooks
+
+    def generate_sexy_tweet_content(self, impact: 'RepositoryImpact') -> str:
+        """Generate compelling, sexy tweet content that summarizes actual changes.
+
+        Args:
+            impact: RepositoryImpact analysis
+
+        Returns:
+            Compelling tweet content
+        """
+        # Extract actual, specific changes from commit messages
+        recent = impact.recent_changes[:3]
+        real_changes = []
+
+        for commit in recent:
+            msg = commit.message.lower()
+
+            # Only extract REAL, specific functionality changes (not infrastructure/tooling)
+            if 'mcp' in msg:
+                real_changes.append("🔌 MCP integration")
+            elif 'browser' in msg or 'playwright' in msg:
+                real_changes.append("🎭 Browser automation")
+            elif 'visual' in msg or 'template' in msg:
+                real_changes.append("🎨 Visual rendering")
+            elif 'api' in msg:
+                real_changes.append("🌐 API endpoints")
+            elif 'auth' in msg:
+                real_changes.append("🔐 Authentication")
+            elif 'database' in msg or 'db' in msg:
+                real_changes.append("🗄️ Database layer")
+            elif 'ui' in msg or 'frontend' in msg:
+                real_changes.append("💄 UI improvements")
+            elif 'chat' in msg or 'message' in msg:
+                real_changes.append("💬 Chat features")
+            elif 'search' in msg:
+                real_changes.append("🔍 Search functionality")
+            elif 'export' in msg or 'download' in msg:
+                real_changes.append("📥 Export features")
+
+        # Build the tweet - eyecatching style
+        tweet_lines = []
+
+        # Hook - make it punchy and eyecatching
+        if impact.total_commits <= 5:
+            tweet_lines.append(f"🚀 {impact.name} v1.0 is LIVE")
+        else:
+            tweet_lines.append(f"🔥 {impact.name} just got an upgrade")
+
+        tweet_lines.append("")
+
+        # What it does - single line
+        tweet_lines.append("Turn commits into viral updates with AI-powered marketing automation.")
+
+        tweet_lines.append("")
+
+        # Real technical changes only (no generic fluff)
+        if real_changes:
+            for change in real_changes[:3]:
+                tweet_lines.append(change)
+        elif len(recent) == 1:
+            # Use actual commit message if no specific pattern matched
+            msg = recent[0].message
+            # Clean up the message
+            for prefix in ['add:', 'fix:', 'feat:', 'chore:']:
+                msg = msg.replace(prefix, '', 1).strip()
+            tweet_lines.append(f"💡 {msg[:80]}")
+
+        # Hashtags - make them pop
+        tweet_lines.append("")
+        tweet_lines.append("👇")
+        tweet_lines.append("#DevTools #AI #OpenSource")
+
+        return "\n".join(tweet_lines)
 
     def _generate_visual_highlights(self, commits: List[CommitInfo]) -> List[str]:
         """Generate visual highlights for templates.

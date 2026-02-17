@@ -7,7 +7,7 @@ name = "git-storyteller"
 version = "1.0.0"
 description = "Stop coding in silence. Turn commits into viral updates."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
     {name = "Devease.ai Labs"}
@@ -17,8 +17,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
 
@@ -53,8 +51,14 @@ include = ["git_storyteller*"]
 
 [tool.black]
 line-length = 100
-target-version = ['py310']
+target-version = ['py312']
 
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]
+ignore = [
+    "E501",  # Line too long - allow longer lines for readability
+    "N806",  # Variable in function should be lowercase - allow PY_LANGUAGE constant
+]
