@@ -328,6 +328,9 @@ class GitAnalyzer:
         if repo_ref:
             tweet_lines.append(f"GitHub: {repo_ref}")
 
+        # Add git-storyteller branding
+        tweet_lines.append("✨ Powered by theanthonyjin/git-storyteller")
+
         tweet_lines.append("#DevTools #AI #OpenSource")
 
         return "\n".join(tweet_lines)

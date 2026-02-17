@@ -179,6 +179,7 @@ async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_
             "recent_count": len(impact.recent_changes),
             "marketing_hooks": impact.marketing_hooks,
             "visual_highlights": impact.visual_highlights,
+            "branding": "Powered by theanthonyjin/git-storyteller",
         }
     }
 
