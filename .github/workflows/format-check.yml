@@ -2,7 +2,7 @@ name: Format Check
 
 on:
   push:
-    branches: [ main, ci, feature/** ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
