@@ -107,7 +107,7 @@ def record_tweet_sent(history: dict, repo_name: str, commit_hash: str):
     history[repo_name]['last_tweeted_at'] = datetime.now().isoformat()
 
 
-async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_index: int, total_repos: int) -> bool:
+async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_index: int, total_repos: int, browser=None) -> bool:
     """Process a single repository: analyze, generate content, and optionally post.
 
     Args:
@@ -116,6 +116,7 @@ async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_
         history: Commit history dictionary
         repo_index: Index of this repo in the list (for display)
         total_repos: Total number of repos (for display)
+        browser: Optional BrowserAutomation instance to reuse
 
     Returns:
         True if successful, False otherwise
@@ -231,8 +232,12 @@ async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_
         print(f"  ⏳ Waiting for you to complete the tweet...")
 
     try:
-        browser = BrowserAutomation()
-        await browser.initialize()
+        # Initialize browser if not provided
+        should_close_browser = False
+        if browser is None:
+            browser = BrowserAutomation()
+            await browser.initialize()
+            should_close_browser = True
 
         if mode == 'confirm':
             # In confirm mode, open browser and wait for human to tweet
@@ -273,6 +278,10 @@ async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_
         return False
 
     finally:
+        # Only close browser if we created it
+        if should_close_browser and browser:
+            await browser.close()
+
         # Cleanup temp file
         if image_path and image_path.exists() and image_path != final_image_path:
             try:
@@ -328,14 +337,29 @@ async def main(mode: str, single_repo: str = None):
         'skipped': 0
     }
 
-    for i, repo_config in enumerate(enabled_repos, 1):
-        success = await process_single_repo(
-            repo_config,
-            mode,
-            history,
-            i,
-            len(enabled_repos)
-        )
+    # Initialize browser once for all repos (only for auto and confirm modes)
+    browser = None
+    if mode in ['auto', 'confirm']:
+        try:
+            print("🌐 Initializing browser...")
+            browser = BrowserAutomation()
+            await browser.initialize()
+            print("  ✓ Browser ready\n")
+        except Exception as e:
+            print(f"  ✗ Failed to initialize browser: {e}")
+            print("  ⚠️  Continuing without browser (will skip posting)\n")
+            browser = None
+
+    try:
+        for i, repo_config in enumerate(enabled_repos, 1):
+            success = await process_single_repo(
+                repo_config,
+                mode,
+                history,
+                i,
+                len(enabled_repos),
+                browser=browser
+            )
 
         if success:
             results['success'] += 1
@@ -346,6 +370,13 @@ async def main(mode: str, single_repo: str = None):
         if i < len(enabled_repos) and mode == 'auto':
             print(f"\n⏸️  Waiting 30 seconds before next repo...")
             await asyncio.sleep(30)
+
+    finally:
+        # Close browser after all repos are processed
+        if browser:
+            print("\n🌐 Closing browser...")
+            await browser.close()
+            print("  ✓ Browser closed")
 
     # Print summary
     print(f"\n{'='*60}")
