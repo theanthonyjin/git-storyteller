@@ -291,10 +291,15 @@ class GitAnalyzer:
         # Use repo_ref (username/repo) if available, otherwise fallback to impact.name
         repo_display = repo_ref if repo_ref else impact.name
 
-        if impact.total_commits <= 5:
+        if impact.total_commits <= 10:
+            # New repo
             tweet_lines.append(f"🚀 {repo_display} v1.0 is LIVE")
+        elif impact.total_commits <= 100:
+            # Growing repo
+            tweet_lines.append(f"🔥 {repo_display} keeps shipping")
         else:
-            tweet_lines.append(f"🔥 {repo_display} just got an upgrade")
+            # Established repo
+            tweet_lines.append(f"⚡ {repo_display} update")
 
         tweet_lines.append("")
 
