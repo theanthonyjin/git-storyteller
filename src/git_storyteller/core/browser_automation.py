@@ -168,6 +168,31 @@ class BrowserAutomation:
             # Wait for page to settle
             await asyncio.sleep(3.0)
 
+            # Click the "Post" button on the left to open composer
+            print("  🖱️  Clicking 'Post' button to open composer...")
+            try:
+                post_button = await self.page.wait_for_selector(
+                    'a[href="/compose/tweet"]',
+                    timeout=10000
+                )
+                await post_button.click()
+                await asyncio.sleep(2.0)
+                print("  ✓ Composer opened")
+            except Exception:
+                print("  ⚠️  Could not find Post button, trying alternate selector...")
+                # Try clicking the first tweet composer we find
+                try:
+                    tweet_box = await self.page.wait_for_selector(
+                        'div[contenteditable="true"][data-testid="tweetTextarea_0"]',
+                        timeout=5000
+                    )
+                    # Click on it to focus
+                    await tweet_box.click()
+                    await asyncio.sleep(1.0)
+                    print("  ✓ Composer focused")
+                except Exception:
+                    print("  ℹ️  Composer may already be open")
+
             # Display tweet content for user to copy
             separator = "=" * 60
             print(f"\n  {separator}")
@@ -180,8 +205,8 @@ class BrowserAutomation:
                 print(f"  🖼️  Image: {image_path}")
             print(f"  {separator}")
             print("\n  👤 INSTRUCTIONS:")
-            print("    1. Click the 'Post' button in the browser (right side)")
-            print("    2. Compose your tweet (copy the content above)")
+            print("    1. Composer is now open in the browser")
+            print("    2. Paste the tweet content from above")
             print("    3. Upload the image from the path above")
             print("    4. Click 'Post' to tweet")
             print("  ⏳ Waiting for you to tweet...")
