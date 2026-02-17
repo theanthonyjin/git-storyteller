@@ -6,12 +6,11 @@ from pathlib import Path
 from typing import Optional
 
 from aiohttp import web
-from fastmcp import FastMCP
 
 from ..config import get_config
+from .browser_automation import BrowserAutomation
 from .git_analyzer import GitAnalyzer
 from .visual_engine import VisualEngine
-from .browser_automation import BrowserAutomation
 
 
 class WebhookServer:
@@ -182,11 +181,9 @@ class WebhookServer:
             print(f"🔀 PR {action} in {repo_name}: {pr['title']}")
 
             # Analyze PR
-            pr_url = pr["url"]
-            impact = self.git_analyzer.analyze(pr_url, ref=pr["head"]["ref"], is_remote=True)
-
-            # Generate PR-specific caption
-            caption = self._generate_pr_caption(pr, impact)
+            # Note: Analysis logic to be implemented for PR posting
+            # pr_url = pr["url"]
+            # impact = self.git_analyzer.analyze(pr_url, ref=pr["head"]["ref"], is_remote=True)
 
             # Post to platforms
             # (Implementation similar to push event)

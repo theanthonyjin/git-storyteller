@@ -1,5 +1,4 @@
 """Configuration management for git-storyteller."""
-import os
 from pathlib import Path
 from typing import Optional
 

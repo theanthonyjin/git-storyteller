@@ -3,11 +3,10 @@ import asyncio
 import random
 from datetime import datetime, timedelta
 from typing import List, Optional
-from pathlib import Path
 
-from .browser_automation import BrowserAutomation
-from .learning_system import LearningSystem, PostRecord
 from ..config import get_config
+from .browser_automation import BrowserAutomation
+from .learning_system import LearningSystem
 
 
 class SelfHypeAmplifier:

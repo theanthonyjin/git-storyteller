@@ -1,7 +1,5 @@
 """Visual rendering engine for creating beautiful code snapshots."""
 import hashlib
-import json
-import tempfile
 from pathlib import Path
 from typing import Optional
 

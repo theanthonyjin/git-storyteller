@@ -1,10 +1,8 @@
 """Git repository analyzer for understanding code semantics."""
-import os
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
-from urllib.parse import urlparse
 
 import git
 from tree_sitter import Language, Parser
@@ -126,7 +124,7 @@ class GitAnalyzer:
                 author=commit.author.name,
                 message=commit.message.strip(),
                 date=commit.committed_datetime.isoformat(),
-                files_changed=[item.a_path for item in commit.diff().items],
+                files_changed=[item.a_path for item in commit.diff()],
                 diff_summary=self._get_diff_summary(commit),
                 semantic_impact=self._analyze_semantic_impact(commit),
             )

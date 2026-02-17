@@ -1,5 +1,4 @@
 """MCP server implementation for git-storyteller."""
-import asyncio
 import json
 from pathlib import Path
 from typing import Optional
@@ -7,10 +6,9 @@ from typing import Optional
 from fastmcp import FastMCP
 
 from ..config import get_config
-from .git_analyzer import GitAnalyzer, RepositoryImpact
-from .visual_engine import VisualEngine
 from .browser_automation import BrowserAutomation
-
+from .git_analyzer import GitAnalyzer
+from .visual_engine import VisualEngine
 
 # Create MCP server
 mcp = FastMCP(name="git-storyteller")
@@ -120,7 +118,6 @@ async def summarize_milestone_impact(
         # Generate impact summary
         feat_count = sum(1 for t in impact_types if "feature" in t.lower())
         fix_count = sum(1 for t in impact_types if "bug fix" in t.lower())
-        perf_count = sum(1 for t in impact_types if "performance" in t.lower())
 
         impact_summary = f"Made {commit_count} commits"
         if feat_count > 0:
@@ -240,8 +237,6 @@ async def stealth_browser_dispatcher(
         - scheduled: Boolean indicating if post was scheduled
         - post_url: URL of posted content (if available)
     """
-    config = get_config()
-
     try:
         # Initialize browser if needed
         browser = get_browser()

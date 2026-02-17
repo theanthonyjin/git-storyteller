@@ -1,10 +1,9 @@
 """Main entry point for git-storyteller CLI."""
 import sys
-from pathlib import Path
 
+from git_storyteller.core.learning_system import LearningSystem
 from git_storyteller.core.mcp_server import run_server
 from git_storyteller.core.webhook_server import run_webhook_server
-from git_storyteller.core.learning_system import LearningSystem
 
 
 def print_usage():

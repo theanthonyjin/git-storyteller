@@ -117,6 +117,12 @@ dmypy.json
 screenshots/
 temp/
 
+# Output directories
+output/
+outputs/
+test_output/
+*.out
+
 # Config (keep example)
 config.yaml
 !.config.example.yaml
