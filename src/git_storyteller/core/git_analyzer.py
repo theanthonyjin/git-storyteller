@@ -89,7 +89,8 @@ class GitAnalyzer:
             # Shallow clone for remote URLs
             temp_dir = tempfile.mkdtemp(prefix="git-storyteller-")
             print(f"Cloning {target} to {temp_dir}...")
-            repo = git.Repo.clone_from(target, temp_dir, depth=1)
+            # Clone full history to get accurate commit count
+            repo = git.Repo.clone_from(target, temp_dir)
             return repo
         else:
             return git.Repo(target)
@@ -303,27 +304,38 @@ class GitAnalyzer:
 
         tweet_lines.append("")
 
-        # What it does - use repo description if available, otherwise generic
-        if impact.description:
-            # Use the actual repo description (truncate if too long)
-            description = impact.description[:100] + "..." if len(impact.description) > 100 else impact.description
-            tweet_lines.append(description)
-        else:
-            tweet_lines.append("Turn commits into viral updates with AI-powered marketing automation.")
+        # What's new - show summary of recent commits
+        if unique_changes:
+            # Show the changes we detected
+            changes_text = "Recent: " + ", ".join(unique_changes[:2])
+            tweet_lines.append(changes_text)
+        elif len(recent) >= 1:
+            # Extract topics from recent commit messages
+            topics = set()
+            for commit in recent[:3]:
+                msg = commit.message.lower()
+                # Look for key topics
+                if 'fix' in msg:
+                    topics.add('fixes')
+                if 'feat' in msg or 'add' in msg:
+                    topics.add('features')
+                if 'doc' in msg or 'readme' in msg:
+                    topics.add('docs')
+                if 'test' in msg:
+                    topics.add('tests')
+                if 'refactor' in msg or 'clean' in msg:
+                    topics.add('improvements')
+
+            if topics:
+                tweet_lines.append("Recent: " + ", ".join(sorted(topics)))
+            else:
+                # Fallback to first commit message
+                msg = recent[0].message
+                for prefix in ['add:', 'fix:', 'feat:', 'chore:', 'docs:']:
+                    msg = msg.replace(prefix, '', 1).strip()
+                tweet_lines.append(f"Latest: {msg[:60]}")
 
         tweet_lines.append("")
-
-        # Real technical changes only (no generic fluff)
-        if unique_changes:
-            # Show only the first/most important change
-            tweet_lines.append(unique_changes[0])
-        elif len(recent) == 1:
-            # Use actual commit message if no specific pattern matched
-            msg = recent[0].message
-            # Clean up the message
-            for prefix in ['add:', 'fix:', 'feat:', 'chore:']:
-                msg = msg.replace(prefix, '', 1).strip()
-            tweet_lines.append(f"💡 {msg[:80]}")
 
         # Hashtags - make them pop
         tweet_lines.append("")
