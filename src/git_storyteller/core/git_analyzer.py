@@ -298,8 +298,13 @@ class GitAnalyzer:
 
         tweet_lines.append("")
 
-        # What it does - single line
-        tweet_lines.append("Turn commits into viral updates with AI-powered marketing automation.")
+        # What it does - use repo description if available, otherwise generic
+        if impact.description:
+            # Use the actual repo description (truncate if too long)
+            description = impact.description[:100] + "..." if len(impact.description) > 100 else impact.description
+            tweet_lines.append(description)
+        else:
+            tweet_lines.append("Turn commits into viral updates with AI-powered marketing automation.")
 
         tweet_lines.append("")
 

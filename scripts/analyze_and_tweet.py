@@ -174,7 +174,7 @@ async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_
     visual_data = {
         "data": {
             "repo_name": repo_display,
-            "description": impact.description or "AI-native marketing agent for developers",
+            "description": impact.description or "Open source project",
             "total_commits": impact.total_commits,
             "recent_count": len(impact.recent_changes),
             "marketing_hooks": impact.marketing_hooks,
