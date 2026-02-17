@@ -1,5 +1,12 @@
 {
-  "required_status_checks": null,
+  "required_status_checks": {
+    "strict": false,
+    "contexts": [
+      "format-check (3.12)",
+      "lint (3.12)",
+      "test (3.12)"
+    ]
+  },
   "enforce_admins": false,
   "required_pull_request_reviews": {
     "required_approving_review_count": 1,
