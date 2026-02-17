@@ -1,6 +1,6 @@
 {
   "required_status_checks": {
-    "strict": false,
+    "strict": true,
     "contexts": [
       "format-check (3.12)",
       "lint (3.12)",
