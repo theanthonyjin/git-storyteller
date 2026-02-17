@@ -35,6 +35,7 @@ class BrowserAutomation:
                 "--disable-blink-features=AutomationControlled",
                 "--disable-infobars",
                 "--window-size=1280,800",
+                "--window-position=100,100",
             ],
         )
 
