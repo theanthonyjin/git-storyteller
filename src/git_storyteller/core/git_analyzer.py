@@ -288,10 +288,13 @@ class GitAnalyzer:
         tweet_lines = []
 
         # Hook - make it punchy and eyecatching
+        # Use repo_ref (username/repo) if available, otherwise fallback to impact.name
+        repo_display = repo_ref if repo_ref else impact.name
+
         if impact.total_commits <= 5:
-            tweet_lines.append(f"🚀 {impact.name} v1.0 is LIVE")
+            tweet_lines.append(f"🚀 {repo_display} v1.0 is LIVE")
         else:
-            tweet_lines.append(f"🔥 {impact.name} just got an upgrade")
+            tweet_lines.append(f"🔥 {repo_display} just got an upgrade")
 
         tweet_lines.append("")
 

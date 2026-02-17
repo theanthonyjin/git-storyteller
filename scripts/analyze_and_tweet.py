@@ -162,9 +162,18 @@ async def process_single_repo(repo_config: dict, mode: str, history: dict, repo_
     print(f"\n[2/4] Generating visual asset...")
     visual_engine = VisualEngine()
 
+    # Extract username/repo from URL for display
+    repo_display = repo_name  # Use the repo_name from config
+    if "github.com/" in repo_url:
+        parts = repo_url.split("github.com/")[-1].split("/")
+        if len(parts) >= 2:
+            username = parts[0]
+            repo_name_clean = parts[1].replace(".git", "")
+            repo_display = f"{username}/{repo_name_clean}"
+
     visual_data = {
         "data": {
-            "repo_name": impact.name,
+            "repo_name": repo_display,
             "description": impact.description or "AI-native marketing agent for developers",
             "total_commits": impact.total_commits,
             "recent_count": len(impact.recent_changes),
