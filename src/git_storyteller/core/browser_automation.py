@@ -171,8 +171,9 @@ class BrowserAutomation:
             # Click the "Post" button on the left to open composer
             print("  🖱️  Clicking 'Post' button to open composer...")
             try:
+                # Try multiple selectors for the Post button
                 post_button = await self.page.wait_for_selector(
-                    'a[href="/compose/tweet"]',
+                    'a[data-testid="SideNav_NewTweet_Button"], div[data-testid="SideNav_NewTweet_Button"], a[aria-label="Post"], a[href="/compose/tweet"]',
                     timeout=10000
                 )
                 await post_button.click()
