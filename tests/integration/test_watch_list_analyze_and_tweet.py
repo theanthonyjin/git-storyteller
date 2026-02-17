@@ -5,12 +5,22 @@ This test:
 2. Records the most recent commit for each repo
 3. Maintains a history of commits for tracking
 4. Tracks first tweet status and generates 48h summary for new repos
+
+Usage:
+    python3.12 tests/integration/test_watch_list_e2e.py --confirm  # Full watch list
+    python3.12 tests/integration/test_watch_list_e2e.py --simple   # Hardcoded repos
+    python3.12 tests/integration/test_watch_list_e2e.py --simple --confirm  # Both
 """
 import json
 from pathlib import Path
 from datetime import datetime, timedelta
 
-import yaml
+try:
+    import yaml
+    HAS_YAML = True
+except ImportError:
+    HAS_YAML = False
+
 from git_storyteller.core.git_analyzer import GitAnalyzer
 import git
 
@@ -20,9 +30,40 @@ WATCH_LIST_PATH = Path(__file__).parent.parent.parent / "config" / "watch_list.y
 HISTORY_DIR = Path(__file__).parent.parent.parent / "output" / "e2e_history"
 HISTORY_FILE = HISTORY_DIR / "watch_list_history.json"
 
+# Hardcoded watch list for simple mode (no yaml dependency)
+SIMPLE_WATCH_LIST = {
+    'watched_repos': [
+        {
+            'name': 'git-storyteller',
+            'url': 'https://github.com/theanthonyjin/git-storyteller',
+            'enabled': True
+        },
+        {
+            'name': 'cline',
+            'url': 'https://github.com/cline/cline',
+            'enabled': True
+        },
+        {
+            'name': 'mcp',
+            'url': 'https://github.com/anthropics/mcp',
+            'enabled': True
+        }
+    ]
+}
 
-def load_watch_list():
-    """Load the watch list configuration."""
+
+def load_watch_list(simple_mode: bool = False):
+    """Load the watch list configuration.
+
+    Args:
+        simple_mode: If True, use hardcoded repos instead of yaml file
+
+    Returns:
+        Watch list configuration dictionary
+    """
+    if simple_mode or not HAS_YAML:
+        return SIMPLE_WATCH_LIST
+
     with open(WATCH_LIST_PATH) as f:
         return yaml.safe_load(f)
 
@@ -138,7 +179,7 @@ def record_tweet_sent(history: dict, repo_name: str, commit_hash: str):
     history[repo_name]['last_tweeted_at'] = datetime.now().isoformat()
 
 
-def test_visit_each_repo_in_watch_list(confirm_mode: bool = False):
+def test_visit_each_repo_in_watch_list(confirm_mode: bool = False, simple_mode: bool = False):
     """Test visiting each repository in the watch list.
 
     This test:
@@ -151,9 +192,10 @@ def test_visit_each_repo_in_watch_list(confirm_mode: bool = False):
 
     Args:
         confirm_mode: If True, ask for confirmation before processing each repo
+        simple_mode: If True, use hardcoded repos instead of yaml file
     """
     # Load configuration
-    config = load_watch_list()
+    config = load_watch_list(simple_mode=simple_mode)
     watched_repos = config.get('watched_repos', [])
 
     # Load existing history
@@ -459,18 +501,21 @@ def test_first_tweet_tracking():
 if __name__ == "__main__":
     import sys
 
-    # Check for confirm mode flag
+    # Check for flags
     confirm_mode = '--confirm' in sys.argv or '-c' in sys.argv
+    simple_mode = '--simple' in sys.argv or '-s' in sys.argv
 
     print("=" * 60)
     print("E2E Test: Watch List Functionality")
     if confirm_mode:
         print("   Confirm mode: ENABLED")
+    if simple_mode:
+        print("   Simple mode: ENABLED (hardcoded repos)")
     print("=" * 60)
 
     # Run tests
     print("\n1️⃣ Testing visit each repo in watch list...")
-    test_visit_each_repo_in_watch_list(confirm_mode=confirm_mode)
+    test_visit_each_repo_in_watch_list(confirm_mode=confirm_mode, simple_mode=simple_mode)
 
     print("\n2️⃣ Testing history persistence...")
     test_history_persistence()
