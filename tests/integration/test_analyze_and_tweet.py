@@ -2,7 +2,6 @@
 """Test the analyze_and_tweet script functionality."""
 
 import sys
-import os
 from pathlib import Path
 
 # Add src to path
@@ -34,12 +33,12 @@ def test_analyze_local_repo():
     print(f"✅ Recent Changes: {len(impact.recent_changes)}")
 
     if impact.marketing_hooks:
-        print(f"\n📊 Marketing Hooks:")
+        print("\n📊 Marketing Hooks:")
         for i, hook in enumerate(impact.marketing_hooks[:3], 1):
             print(f"   {i}. {hook}")
 
     if impact.visual_highlights:
-        print(f"\n🎨 Visual Highlights:")
+        print("\n🎨 Visual Highlights:")
         for i, highlight in enumerate(impact.visual_highlights[:3], 1):
             print(f"   {i}. {highlight}")
 
@@ -71,12 +70,12 @@ def test_analyze_specific_commit():
     print(f"\n📂 Analyzing HEAD of: {repo_path}")
     impact = analyzer.analyze(str(repo_path), ref="HEAD~5", is_remote=False)
 
-    print(f"\n✅ Analyzed commit range: HEAD~5")
+    print("\n✅ Analyzed commit range: HEAD~5")
     print(f"✅ Total commits in range: {impact.total_commits}")
 
     if impact.recent_changes:
         latest = impact.recent_changes[0]
-        print(f"\n📝 Latest commit:")
+        print("\n📝 Latest commit:")
         print(f"   Hash: {latest.hash[:8]}")
         print(f"   Message: {latest.message[:60]}...")
 
