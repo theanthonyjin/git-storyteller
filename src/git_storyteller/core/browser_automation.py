@@ -44,6 +44,9 @@ class BrowserAutomation:
         else:
             self.page = await self.browser.new_page()
 
+        # Wait for page to be ready
+        await self.page.wait_for_load_state("domcontentloaded")
+
     async def close(self):
         """Close the browser."""
         if self.browser:
@@ -163,7 +166,9 @@ class BrowserAutomation:
         try:
             # Navigate to Twitter
             print("  🌐 Opening Twitter...")
+            print("  ℹ️  Navigating to https://twitter.com...")
             await self.page.goto("https://twitter.com", wait_until="domcontentloaded", timeout=60000)
+            print("  ✓ Page loaded")
 
             # Wait for page to settle
             await asyncio.sleep(3.0)
