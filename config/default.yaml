@@ -1,0 +1,53 @@
+# Git-Storyteller Configuration
+
+# Operational mode
+mode: autonomous
+
+# Theme settings
+theme: dark
+primary_color: "#6366f1"
+brand_colors:
+  - "#6366f1"
+  - "#8b5cf6"
+  - "#a855f7"
+logo_path: null
+font_family: "JetBrains Mono"
+
+# Template configurations
+templates:
+  carbon_x:
+    enabled: true
+    background_opacity: 0.95
+    border_radius: 12
+  bento_metrics:
+    enabled: true
+    grid_columns: 3
+
+# Browser automation settings
+browser:
+  user_data_dir: null
+  headless: false
+  screenshot_scale: 2.0
+
+# Social platform settings
+social:
+  twitter:
+    enabled: true
+    scheduled_at: "09:00"
+  linkedin:
+    enabled: false
+  mastodon:
+    enabled: false
+  bluesky:
+    enabled: false
+
+# Entropy injection for stealth behavior
+entropy:
+  temperature: 0.8
+  randomize_timing: true
+  min_wait_seconds: 8.4
+  max_wait_seconds: 22.1
+
+# Learning system
+learning:
+  feedback_file: "/Users/anthony/coding/git-storyteller/config/learning.json"

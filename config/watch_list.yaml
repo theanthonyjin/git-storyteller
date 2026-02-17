@@ -1,0 +1,12 @@
+# Git-Storyteller Watch List
+# Repositories to monitor for social media content
+
+watched_repos:
+  - name: git-storyteller
+    owner: theanthonyjin
+    url: https://github.com/theanthonyjin/git-storyteller
+    enabled: true
+    platforms:
+      - twitter
+    template: bento_metrics
+    description: AI-native marketing agent for developers. Turn commits into viral updates.
