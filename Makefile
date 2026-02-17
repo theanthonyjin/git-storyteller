@@ -1,7 +1,7 @@
 .PHONY: install install-dev test lint type-check format format-check clean clean-cache build publish help
 
 # Force Python 3.12
-PYTHON_EXE := python3.12
+PYTHON_EXE := /Users/anthony/.local/bin/python3.12
 
 PYTHON_CHECK := $(shell command -v $(PYTHON_EXE) 2>/dev/null)
 ifeq ($(strip $(PYTHON_CHECK)),)
@@ -62,39 +62,43 @@ coverage:
 # Lint code with ruff
 lint:
 	@echo "Running ruff linter..."
-	@if ! $(PYTHON_EXE) -c "import ruff" 2>/dev/null; then \
-		echo "ruff not found, installing..."; \
-		$(PYTHON_EXE) -m pip install ruff --quiet; \
+	@if ! command -v ruff > /dev/null 2>&1; then \
+		echo "ruff not found. Install with: pip install ruff"; \
+		exit 1; \
 	fi
-	@$(PYTHON_EXE) -m ruff check src/ tests/ || exit 1
+	@ruff check src/ tests/ || exit 1
 
 # Type check code
 type-check:
 	@echo "Running mypy type checker..."
-	@if ! $(PYTHON_EXE) -c "import mypy" 2>/dev/null; then \
-		echo "mypy not found, installing..."; \
-		$(PYTHON_EXE) -m pip install mypy --quiet; \
+	@if ! $(PYTHON_EXE) -c "import mypy" 2>/dev/null && ! command -v mypy > /dev/null 2>&1; then \
+		echo "mypy not found. Install with: pip install mypy"; \
+		exit 1; \
 	fi
-	@$(PYTHON_EXE) -m mypy src/ || exit 1
+	@if command -v mypy > /dev/null 2>&1; then \
+		mypy src/ || exit 1; \
+	else \
+		$(PYTHON_EXE) -m mypy src/ || exit 1; \
+	fi
 
 # Format code with ruff
 format:
 	@echo "Formatting code with ruff..."
-	@if ! $(PYTHON_EXE) -c "import ruff" 2>/dev/null; then \
-		echo "ruff not found, installing..."; \
-		$(PYTHON_EXE) -m pip install ruff --quiet; \
+	@if ! command -v ruff > /dev/null 2>&1; then \
+		echo "ruff not found. Install with: pip install ruff"; \
+		exit 1; \
 	fi
-	@$(PYTHON_EXE) -m ruff check --fix src/ tests/
+	@ruff check --fix src/ tests/
 	@echo "Formatting complete!"
 
 # Check code formatting (without modifying files)
 format-check:
 	@echo "Checking code formatting with ruff..."
-	@if ! $(PYTHON_EXE) -c "import ruff" 2>/dev/null; then \
-		echo "ruff not found, installing..."; \
-		$(PYTHON_EXE) -m pip install ruff --quiet; \
+	@if ! command -v ruff > /dev/null 2>&1; then \
+		echo "ruff not found. Install with: pip install ruff"; \
+		exit 1; \
 	fi
-	@$(PYTHON_EXE) -m ruff check src/ tests/
+	@ruff check src/ tests/
 
 # Clean Python cache and build artifacts
 clean-cache:

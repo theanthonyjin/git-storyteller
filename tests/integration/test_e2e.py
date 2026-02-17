@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Local test script for Git-Storyteller on itself."""
-import sys
 import asyncio
+import sys
 from pathlib import Path
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from git_storyteller.core.git_analyzer import GitAnalyzer
-from git_storyteller.core.visual_engine import VisualEngine
 from git_storyteller.core.learning_system import LearningSystem
+from git_storyteller.core.visual_engine import VisualEngine
 
 
 def test_analyzer():
@@ -29,11 +29,11 @@ def test_analyzer():
     print(f"✅ Description: {impact.description}")
     print(f"✅ Total Commits: {impact.total_commits}")
     print(f"✅ Recent Changes: {len(impact.recent_changes)}")
-    print(f"\n📊 Marketing Hooks:")
+    print("\n📊 Marketing Hooks:")
     for i, hook in enumerate(impact.marketing_hooks[:3], 1):
         print(f"   {i}. {hook}")
 
-    print(f"\n🎨 Visual Highlights:")
+    print("\n🎨 Visual Highlights:")
     for i, highlight in enumerate(impact.visual_highlights[:3], 1):
         print(f"   {i}. {highlight}")
 
@@ -138,7 +138,7 @@ def generate_sample_post():
     impact = analyzer.analyzer(".", ref="HEAD", is_remote=False)
 
     print("\n─" * 50)
-    print(f"🚀 Just pushed updates to git-storyteller!")
+    print("🚀 Just pushed updates to git-storyteller!")
     print()
 
     for hook in impact.marketing_hooks[:3]:

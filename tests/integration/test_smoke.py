@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple test for Git-Storyteller without full dependencies."""
 import sys
-import os
 from pathlib import Path
 
 # Test 1: Check code structure
@@ -63,7 +62,7 @@ try:
     theme = config.get("theme")
     primary_color = config.get("primary_color")
 
-    print(f"   ✅ Config loaded successfully")
+    print("   ✅ Config loaded successfully")
     print(f"   📋 Mode: {mode}")
     print(f"   🎨 Theme: {theme}")
     print(f"   🔷 Primary color: {primary_color}")
@@ -86,7 +85,7 @@ try:
     print(f"   📝 Recent changes: {len(impact.recent_changes)}")
 
     if impact.marketing_hooks:
-        print(f"\n   🎯 Generated hooks:")
+        print("\n   🎯 Generated hooks:")
         for hook in impact.marketing_hooks[:3]:
             print(f"      • {hook}")
 
@@ -107,7 +106,7 @@ print()
 try:
     for hook in impact.marketing_hooks[:3]:
         print(f"• {hook}")
-except:
+except Exception:
     pass
 
 print()

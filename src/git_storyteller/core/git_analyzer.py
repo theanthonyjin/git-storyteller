@@ -219,6 +219,80 @@ class GitAnalyzer:
 
         return hooks
 
+    def generate_sexy_tweet_content(self, impact: 'RepositoryImpact') -> str:
+        """Generate compelling, sexy tweet content that summarizes actual changes.
+
+        Args:
+            impact: RepositoryImpact analysis
+
+        Returns:
+            Compelling tweet content
+        """
+        # Start with a hook based on what was actually done
+        recent = impact.recent_changes[:3]
+
+        # Extract actual changes from commit messages
+        changes = []
+        for commit in recent:
+            # Parse the commit message for actionable content
+            msg = commit.message.lower()
+
+            # Extract key phrases that describe what was done
+            if 'testing' in msg or 'test' in msg:
+                changes.append("✅ Added testing infrastructure with GitHub Actions")
+            elif 'fix' in msg or 'bug' in msg:
+                changes.append("🔧 Fixed bugs and improved stability")
+            elif 'feat' in msg or 'add' in msg:
+                changes.append("✨ Shipped new features")
+            elif 'refactor' in msg:
+                changes.append("♻️  Refactored code for better maintainability")
+            elif 'perf' in msg or 'optimize' in msg:
+                changes.append("⚡ Optimized performance")
+            elif 'doc' in msg:
+                changes.append("📚 Updated documentation")
+
+        # Fallback if no specific changes extracted
+        if not changes:
+            if len(recent) == 1:
+                changes.append(f"💡 {recent[0].message[:80]}...")
+            else:
+                changes.append(f"🔥 Pushed {len(recent)} updates")
+
+        # Build the tweet
+        tweet_lines = []
+
+        # Hook line - make it compelling
+        if impact.total_commits <= 5:
+            hook = f"🚀 Just shipped {impact.name} v1.0!"
+        else:
+            hook = f"🚀 Big updates to {impact.name}!"
+
+        tweet_lines.append(hook)
+        tweet_lines.append("")
+
+        # What it does (value prop) - always include something compelling
+        if impact.description:
+            tweet_lines.append(f"{impact.description}")
+        else:
+            tweet_lines.append(f"Turn commits into viral updates with AI-powered marketing automation.")
+
+        tweet_lines.append("")
+
+        # Actual changes in plain language
+        for change in changes[:3]:
+            tweet_lines.append(change)
+
+        # Call to action or stats
+        tweet_lines.append("")
+        tweet_lines.append(f"🔥 {impact.total_commits} commits of pure dev productivity")
+        tweet_lines.append("💻 Built with FastMCP + Playwright + GitPython")
+
+        # Hashtags
+        tweet_lines.append("")
+        tweet_lines.append("#DevTools #AI #OpenSource #Python #Automation")
+
+        return "\n".join(tweet_lines)
+
     def _generate_visual_highlights(self, commits: List[CommitInfo]) -> List[str]:
         """Generate visual highlights for templates.
 
