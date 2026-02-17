@@ -194,23 +194,44 @@ class BrowserAutomation:
                 except Exception:
                     print("  ℹ️  Composer may already be open")
 
-            # Display tweet content for user to copy
+            # Fill tweet content
+            print("  ✍️  Filling tweet content...")
+            try:
+                tweet_box = await self.page.wait_for_selector(
+                    'div[contenteditable="true"][data-testid="tweetTextarea_0"]',
+                    timeout=5000
+                )
+                await tweet_box.fill(text)
+                await asyncio.sleep(1.0)
+                print("  ✓ Tweet content filled")
+            except Exception as e:
+                print(f"  ⚠️  Could not fill tweet content: {e}")
+
+            # Upload image if provided
+            if image_path:
+                print(f"  🖼️  Uploading image: {image_path}")
+                try:
+                    # Find the file input
+                    file_input = await self.page.wait_for_selector('input[type="file"]', timeout=5000)
+                    await file_input.set_input_files(str(image_path))
+                    await asyncio.sleep(3.0)  # Wait for upload to complete
+                    print("  ✓ Image uploaded")
+                except Exception as e:
+                    print(f"  ⚠️  Could not upload image: {e}")
+
+            # Display summary
             separator = "=" * 60
             print(f"\n  {separator}")
-            print("  📝 TWEET CONTENT (copy this):")
+            print("  📝 TWEET IS READY!")
             print(f"  {separator}")
-            for line in text.split("\n"):
-                print(f"  {line}")
             if image_path:
-                print(f"  {separator}")
-                print(f"  🖼️  Image: {image_path}")
+                print("  ✅ Content filled and image uploaded")
+            else:
+                print("  ✅ Content filled")
             print(f"  {separator}")
-            print("\n  👤 INSTRUCTIONS:")
-            print("    1. Composer is now open in the browser")
-            print("    2. Paste the tweet content from above")
-            print("    3. Upload the image from the path above")
-            print("    4. Click 'Post' to tweet")
-            print("  ⏳ Waiting for you to tweet...")
+            print("\n  👤 NEXT STEP:")
+            print("    Review the tweet in the browser and click 'Post' to publish")
+            print("  ⏳ Waiting for you to post...")
             print(f"  {separator}\n")
 
             if wait_for_human:
