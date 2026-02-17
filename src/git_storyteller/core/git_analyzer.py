@@ -219,11 +219,12 @@ class GitAnalyzer:
 
         return hooks
 
-    def generate_sexy_tweet_content(self, impact: 'RepositoryImpact') -> str:
+    def generate_sexy_tweet_content(self, impact: 'RepositoryImpact', repo_url: str = None) -> str:
         """Generate compelling, sexy tweet content that summarizes actual changes.
 
         Args:
             impact: RepositoryImpact analysis
+            repo_url: Optional repository URL to include in tweet
 
         Returns:
             Compelling tweet content
@@ -257,6 +258,14 @@ class GitAnalyzer:
             elif 'export' in msg or 'download' in msg:
                 real_changes.append("📥 Export features")
 
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_changes = []
+        for change in real_changes:
+            if change not in seen:
+                seen.add(change)
+                unique_changes.append(change)
+
         # Build the tweet - eyecatching style
         tweet_lines = []
 
@@ -274,9 +283,9 @@ class GitAnalyzer:
         tweet_lines.append("")
 
         # Real technical changes only (no generic fluff)
-        if real_changes:
-            for change in real_changes[:3]:
-                tweet_lines.append(change)
+        if unique_changes:
+            # Show only the first/most important change
+            tweet_lines.append(unique_changes[0])
         elif len(recent) == 1:
             # Use actual commit message if no specific pattern matched
             msg = recent[0].message
@@ -288,9 +297,69 @@ class GitAnalyzer:
         # Hashtags - make them pop
         tweet_lines.append("")
         tweet_lines.append("👇")
+
+        # Add repo link if provided
+        if repo_url:
+            tweet_lines.append(f"🔗 {repo_url}")
+
         tweet_lines.append("#DevTools #AI #OpenSource")
 
         return "\n".join(tweet_lines)
+
+    @staticmethod
+    def get_last_tweeted_commit(history_file: Path = None) -> str:
+        """Get the last commit hash that was tweeted.
+
+        Args:
+            history_file: Path to history file (default: output/.tweeted_history)
+
+        Returns:
+            Last commit hash or empty string if none
+        """
+        if history_file is None:
+            history_file = Path.cwd() / "output" / ".tweeted_history"
+
+        if history_file.exists():
+            with open(history_file, 'r') as f:
+                return f.read().strip()
+        return ""
+
+    @staticmethod
+    def save_tweeted_commit(commit_hash: str, history_file: Path = None):
+        """Save the commit hash that was just tweeted.
+
+        Args:
+            commit_hash: Commit hash to save
+            history_file: Path to history file (default: output/.tweeted_history)
+        """
+        if history_file is None:
+            history_file = Path.cwd() / "output" / ".tweeted_history"
+
+        history_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(history_file, 'w') as f:
+            f.write(commit_hash)
+
+    def get_new_commits(self, repo: git.Repo, last_tweeted: str = None) -> list:
+        """Get commits since the last tweeted one.
+
+        Args:
+            repo: Git repository object
+            last_tweeted: Last commit hash that was tweeted
+
+        Returns:
+            List of new commits
+        """
+        if not last_tweeted:
+            # No history, get recent commits
+            return list(repo.iter_commits(max_count=10))
+
+        # Get commits since last tweeted
+        commits = []
+        for commit in repo.iter_commits():
+            if commit.hexsha.startswith(last_tweeted):
+                break
+            commits.append(commit)
+        return commits[:10]  # Limit to 10
 
     def _generate_visual_highlights(self, commits: List[CommitInfo]) -> List[str]:
         """Generate visual highlights for templates.
