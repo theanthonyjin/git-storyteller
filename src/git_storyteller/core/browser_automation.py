@@ -136,6 +136,129 @@ class BrowserAutomation:
             print(f"❌ Failed to post to Twitter: {e}")
             return False
 
+    async def post_to_twitter_interactive(
+        self,
+        text: str,
+        image_path: Optional[Path] = None,
+        wait_for_human: bool = True,
+    ) -> bool:
+        """Post to Twitter/X in interactive mode - pre-fill and wait for human to post.
+
+        This method opens Twitter, pre-fills the tweet text and image, then waits
+        for the human user to manually click the "Post" button. Once posted, it
+        detects the success and returns control to the script.
+
+        Args:
+            text: Tweet text
+            image_path: Optional path to image to attach
+            wait_for_human: If True, wait for human to click Post button
+
+        Returns:
+            True if successfully posted, False otherwise
+        """
+        if not self.config.get("social.twitter.enabled", False):
+            print("Twitter posting is not enabled in config")
+            return False
+
+        try:
+            # Navigate to Twitter
+            print("  🌐 Opening Twitter...")
+            await self.page.goto("https://twitter.com", wait_until="networkidle")
+
+            # Wait for user to be logged in (check for tweet composer)
+            await asyncio.sleep(2.0)
+
+            # Look for tweet composer
+            print("  📝 Looking for tweet composer...")
+            tweet_box = await self.page.wait_for_selector(
+                'div[contenteditable="true"][data-testid="tweetTextarea_0"]',
+                timeout=30000,
+            )
+
+            # Fill tweet text (faster than human typing since human will review)
+            print("  ✍️  Pre-filling tweet text...")
+            await tweet_box.fill(text)
+
+            # Add image if provided
+            if image_path:
+                print(f"  🖼️  Attaching image: {image_path}")
+                await asyncio.sleep(0.5)
+                file_input = await self.page.wait_for_selector('input[type="file"]')
+                await file_input.set_input_files(str(image_path))
+                await asyncio.sleep(2.0)  # Wait for image upload
+
+            if wait_for_human:
+                separator = "=" * 60
+                print(f"\n  {separator}")
+                print("  👤 INTERACTIVE MODE")
+                print(f"  {separator}")
+                print("  Tweet is ready in the browser!")
+                print("  Please:")
+                print("    1. Review the tweet content")
+                print("    2. Click the 'Post' button in the browser")
+                print("    3. Wait for confirmation")
+                print(f"  {separator}")
+                print("  ⏳ Waiting for you to post...")
+
+                # Wait for the tweet button to disappear or change state
+                # This indicates the tweet was successfully posted
+                try:
+                    # Poll for the tweet being posted - check if the composer clears
+                    # or if we're redirected, or if a success message appears
+                    max_wait_time = 600  # 10 minutes max wait
+                    check_interval = 2  # Check every 2 seconds
+                    elapsed = 0
+
+                    while elapsed < max_wait_time:
+                        await asyncio.sleep(check_interval)
+                        elapsed += check_interval
+
+                        # Check if tweet box is cleared (indicating successful post)
+                        tweet_box_check = await self.page.query_selector(
+                            'div[contenteditable="true"][data-testid="tweetTextarea_0"]'
+                        )
+                        if tweet_box_check:
+                            current_text = await tweet_box_check.inner_text()
+                            if not current_text or current_text.strip() == "":
+                                print("\n  ✅ Tweet posted successfully!")
+                                await asyncio.sleep(2.0)
+                                return True
+
+                        # Check for "Posted" or success indicators
+                        # Twitter shows a "Your post was sent" toast
+                        success_toast = await self.page.query_selector(
+                            'div[role="status"]:has-text("sent"), div[role="status"]:has-text("posted")'
+                        )
+                        if success_toast:
+                            print("\n  ✅ Tweet posted successfully!")
+                            await asyncio.sleep(2.0)
+                            return True
+
+                        # Check if URL changed (might be navigated away)
+                        current_url = self.page.url
+                        if "tweet" in current_url or "status" in current_url:
+                            print("\n  ✅ Tweet posted successfully (redirected)!")
+                            await asyncio.sleep(2.0)
+                            return True
+
+                    print("\n  ⏱️  Timeout waiting for tweet post (10 minutes)")
+                    print("  ℹ️  Please close the browser to continue...")
+                    return False
+
+                except Exception as e:
+                    print(f"\n  ⚠️  Error while waiting for post: {e}")
+                    return False
+
+            return True
+
+        except Exception as e:
+            print(f"❌ Failed to set up Twitter post: {e}")
+            print("\n  Troubleshooting:")
+            print("  1. Make sure you're logged into Twitter/X in the browser")
+            print("  2. Check that Twitter.com is accessible")
+            print("  3. Verify the browser window is visible")
+            return False
+
     async def post_to_linkedin(
         self,
         text: str,

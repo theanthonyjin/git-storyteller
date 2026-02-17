@@ -10,7 +10,7 @@ watched_repos:
     platforms:
       - twitter
     template: carbon_x
-    description: Most popular open-source AI agent. Focus: New tool integrations, long-task success rate improvements.
+    description: "Most popular open-source AI agent. Focus: New tool integrations, long-task success rate improvements."
     tags: [ai-agent, featured]
 
   - name: mcp
@@ -20,7 +20,7 @@ watched_repos:
     platforms:
       - twitter
     template: bento_metrics
-    description: Our underlying protocol - official updates carry authoritative traffic. Focus: New standards, protocol changes, official ecosystem updates.
+    description: "Our underlying protocol - official updates carry authoritative traffic. Focus: New standards, protocol changes, official ecosystem updates."
     tags: [mcp, protocol, featured]
 
   - name: cline
@@ -30,7 +30,7 @@ watched_repos:
     platforms:
       - twitter
     template: carbon_x
-    description: Hottest open-source AI coding assistant (formerly Claude Dev). Focus: New provider support, major UI updates.
+    description: "Hottest open-source AI coding assistant (formerly Claude Dev). Focus: New provider support, major UI updates."
     tags: [ai-agent, coding, featured]
 
   # MCP Ecosystem (Developer Workflow Integration)
@@ -41,7 +41,7 @@ watched_repos:
     platforms:
       - twitter
     template: carbon_x
-    description: Official MCP server collection. Focus: New server tools (Google Maps, Slack integrations).
+    description: "Official MCP server collection. Focus: New server tools (Google Maps, Slack integrations)."
     tags: [mcp, ecosystem]
 
   - name: fastmcp
@@ -51,7 +51,7 @@ watched_repos:
     platforms:
       - twitter
     template: carbon_x
-    description: Our Python framework. Focus: Performance optimizations, new decorator syntax.
+    description: "Our Python framework. Focus: Performance optimizations, new decorator syntax."
     tags: [mcp, framework]
 
   - name: awesome-mcp-servers
@@ -61,7 +61,7 @@ watched_repos:
     platforms:
       - twitter
     template: carbon_x
-    description: Community's most comprehensive MCP list. Focus: Discovering interesting third-party servers.
+    description: "Community's most comprehensive MCP list. Focus: Discovering interesting third-party servers."
     tags: [mcp, community]
 
   # Infrastructure & LLM (Professional Credibility)
@@ -72,7 +72,7 @@ watched_repos:
     platforms:
       - twitter
     template: bento_metrics
-    description: Top-tier model with global attention. Focus: Performance benchmarks, new model releases.
+    description: "Top-tier model with global attention. Focus: Performance benchmarks, new model releases."
     tags: [llm, featured]
 
   - name: ollama
@@ -82,7 +82,7 @@ watched_repos:
     platforms:
       - twitter
     template: bento_metrics
-    description: Standard for local LLM execution. Focus: New model support, concurrency performance improvements.
+    description: "Standard for local LLM execution. Focus: New model support, concurrency performance improvements."
     tags: [infrastructure, llm]
 
   - name: vllm
@@ -92,7 +92,7 @@ watched_repos:
     platforms:
       - twitter
     template: carbon_x
-    description: High-concurrency inference framework with strong engineering appeal. Focus: Throughput optimizations, new model support.
+    description: "High-concurrency inference framework with strong engineering appeal. Focus: Throughput optimizations, new model support."
     tags: [infrastructure, featured]
 
   # Self-Project
