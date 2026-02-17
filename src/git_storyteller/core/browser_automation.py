@@ -22,36 +22,28 @@ class BrowserAutomation:
         """Initialize browser with user data directory for session persistence."""
         playwright = await async_playwright().start()
 
-        # Get user data directory from config or use default
-        user_data_dir = self.config.get("browser.user_data_dir")
-        # Expand ~ to home directory
-        if user_data_dir and user_data_dir.startswith("~/"):
-            import os
-            user_data_dir = os.path.expanduser(user_data_dir)
-
+        # Get config
         headless = self.config.get("browser.headless", False)
 
-        # Launch Chrome with user data directory for session persistence
-        self.browser = await playwright.chromium.launch_persistent_context(
-            user_data_dir=user_data_dir,
+        # Use regular launch (not persistent_context) to ensure window is visible
+        # This is simpler and more reliable
+        self.browser = await playwright.chromium.launch(
             headless=headless,
-            channel="chrome",  # Use Chrome instead of Chromium
+            channel="chrome",
             args=[
                 "--disable-blink-features=AutomationControlled",
                 "--disable-infobars",
-                "--window-size=1280,800",
-                "--window-position=100,100",
             ],
         )
 
-        # Get or create page
-        if len(self.browser.pages) > 0:
-            self.page = self.browser.pages[0]
-        else:
-            self.page = await self.browser.new_page()
+        # Create a new context and page
+        context = await self.browser.new_context(
+            viewport={"width": 1280, "height": 800},
+            locale="en-US",
+        )
+        self.page = await context.new_page()
 
-        # Wait for page to be ready
-        await self.page.wait_for_load_state("domcontentloaded")
+        print("  ✓ Browser launched (visible window)")
 
     async def close(self):
         """Close the browser."""
