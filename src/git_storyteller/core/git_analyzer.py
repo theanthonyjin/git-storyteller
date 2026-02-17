@@ -274,16 +274,8 @@ class GitAnalyzer:
         tweet_lines.append("")
 
         # Real technical changes only (no generic fluff)
-        if real_changes:
-            for change in real_changes[:3]:
-                tweet_lines.append(change)
-        elif len(recent) == 1:
-            # Use actual commit message if no specific pattern matched
-            msg = recent[0].message
-            # Clean up the message
-            for prefix in ['add:', 'fix:', 'feat:', 'chore:']:
-                msg = msg.replace(prefix, '', 1).strip()
-            tweet_lines.append(f"💡 {msg[:80]}")
+        for change in real_changes[:3]:
+            tweet_lines.append(change)
 
         # Hashtags - make them pop
         tweet_lines.append("")
