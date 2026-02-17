@@ -24,6 +24,11 @@ class BrowserAutomation:
 
         # Get user data directory from config or use default
         user_data_dir = self.config.get("browser.user_data_dir")
+        # Expand ~ to home directory
+        if user_data_dir and user_data_dir.startswith("~/"):
+            import os
+            user_data_dir = os.path.expanduser(user_data_dir)
+
         headless = self.config.get("browser.headless", False)
 
         # Launch Chrome with user data directory for session persistence
