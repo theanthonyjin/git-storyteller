@@ -229,6 +229,24 @@ class GitAnalyzer:
         Returns:
             Compelling tweet content
         """
+        # Extract username/repo from URL for better Twitter reach
+        repo_ref = None
+        if repo_url:
+            # Parse GitHub URL to get "username/repo" format
+            # Handles: https://github.com/username/repo, git@github.com:username/repo.git
+            if "github.com/" in repo_url:
+                parts = repo_url.split("github.com/")[-1].split("/")
+                if len(parts) >= 2:
+                    username = parts[0]
+                    repo_name = parts[1].replace(".git", "")
+                    repo_ref = f"{username}/{repo_name}"
+            elif "github.com:" in repo_url:
+                # Handle SSH format: git@github.com:username/repo.git
+                parts = repo_url.split("github.com:")[-1].split("/")
+                if len(parts) >= 2:
+                    username = parts[0]
+                    repo_name = parts[1].replace(".git", "")
+                    repo_ref = f"{username}/{repo_name}"
         # Extract actual, specific changes from commit messages
         recent = impact.recent_changes[:3]
         real_changes = []
@@ -298,9 +316,9 @@ class GitAnalyzer:
         tweet_lines.append("")
         tweet_lines.append("👇")
 
-        # Add repo link if provided
-        if repo_url:
-            tweet_lines.append(f"🔗 {repo_url}")
+        # Add repo reference if provided (text format for better Twitter reach)
+        if repo_ref:
+            tweet_lines.append(f"GitHub: {repo_ref}")
 
         tweet_lines.append("#DevTools #AI #OpenSource")
 
