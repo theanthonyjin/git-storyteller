@@ -36,14 +36,18 @@ class BrowserAutomation:
             ],
         )
 
-        # Create a new context and page
-        context = await self.browser.new_context(
+        # Create a context for reuse
+        self.context = await self.browser.new_context(
             viewport={"width": 1280, "height": 800},
             locale="en-US",
         )
-        self.page = await context.new_page()
 
         print("  ✓ Browser launched (visible window)")
+
+    async def new_page(self):
+        """Create a new page for each tweet."""
+        self.page = await self.context.new_page()
+        return self.page
 
     async def close(self):
         """Close the browser."""
@@ -162,6 +166,9 @@ class BrowserAutomation:
             return False
 
         try:
+            # Create a fresh page for this tweet
+            await self.new_page()
+
             # Navigate to Twitter
             print("  🌐 Opening Twitter...")
             print("  ℹ️  Navigating to https://twitter.com...")
@@ -228,6 +235,13 @@ class BrowserAutomation:
             print("  2. Check that Twitter.com is accessible")
             print("  3. Verify the browser window is visible")
             return False
+        finally:
+            # Close the page to clean up
+            if self.page:
+                try:
+                    await self.page.close()
+                except Exception:
+                    pass
 
     async def post_to_linkedin(
         self,
