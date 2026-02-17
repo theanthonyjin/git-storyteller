@@ -1,0 +1,72 @@
+# Git-Storyteller Configuration Example
+# Copy this to ~/.config/git-storyteller/config.yaml and customize
+
+# Operational mode
+# autonomous: Run without confirmation (default)
+# semi-auto: Show preview and wait for approval
+mode: autonomous
+
+# Theme settings
+theme: dark  # dark or light
+primary_color: "#6366f1"
+brand_colors:
+  - "#6366f1"
+  - "#8b5cf6"
+  - "#a855f7"
+logo_path: null  # Path to your logo image (optional)
+font_family: "JetBrains Mono"
+
+# Template configurations
+templates:
+  carbon_x:
+    enabled: true
+    background_opacity: 0.95
+    border_radius: 12
+
+  bento_metrics:
+    enabled: true
+    grid_columns: 3
+
+# Browser automation settings
+browser:
+  # Leave null to use your default Chrome profile
+  # This allows reusing your logged-in sessions
+  user_data_dir: null
+
+  # Run in headless mode (not recommended for social posting)
+  headless: false
+
+  # Screenshot scale factor for high-res images
+  screenshot_scale: 2.0
+
+# Social platform settings
+social:
+  twitter:
+    enabled: true
+    # Optional: Schedule posts for specific time (HH:MM format)
+    scheduled_at: "09:00"
+
+  linkedin:
+    enabled: false
+
+  # Future platforms
+  mastodon:
+    enabled: false
+  bluesky:
+    enabled: false
+
+# Entropy injection for stealth behavior
+entropy:
+  # Temperature for text generation (0.8 = more creative)
+  temperature: 0.8
+
+  # Randomize timing between actions
+  randomize_timing: true
+
+  # Min/max wait time in seconds between actions
+  min_wait_seconds: 8.4
+  max_wait_seconds: 22.1
+
+# Learning system
+learning:
+  feedback_file: "~/.config/git-storyteller/learning.json"

@@ -1,0 +1,74 @@
+name: git-storyteller
+version: 1.0.0
+description: Stop coding in silence. Turn commits into viral updates.
+author: Devease.ai Labs
+license: MIT
+
+# MCP Server Configuration
+mcp:
+  name: git-storyteller
+  version: 1.0.0
+  command: python
+  args:
+    - "-m"
+    - "git_storyteller"
+
+# Capabilities
+capabilities:
+  tools:
+    - analyze_repository_impact
+    - summarize_milestone_impact
+    - dynamic_template_render
+    - stealth_browser_dispatcher
+    - fetch_engagement_feedback
+    - autonomous_storyteller_workflow
+
+# Resources
+resources:
+  repository: https://github.com/theanthonyjin/git-storyteller
+  documentation: https://github.com/theanthonyjin/git-storyteller#readme
+  homepage: https://github.com/theanthonyjin/git-storyteller
+
+# Tags for discovery
+tags:
+  - git
+  - github
+  - social-media
+  - marketing
+  - automation
+  - developer-tools
+  - mcp
+  - ai
+  - content-creation
+  - visualization
+
+# Categories
+categories:
+  - Development Tools
+  - Social Media
+  - Automation
+  - AI/ML
+
+# Pricing
+pricing:
+  type: free
+  description: Open source and free to use
+
+# Installation
+installation:
+  pip: pip install git-storyteller
+
+# Configuration
+configuration:
+  type: yaml
+  path: ~/.config/git-storyteller/config.yaml
+  example: .config.example.yaml
+
+# Screenshots (optional)
+screenshots:
+  - https://github.com/theanthonyjin/git-storyteller/raw/main/assets/screenshot1.png
+  - https://github.com/theanthonyjin/git-storyteller/raw/main/assets/screenshot2.png
+
+# Badge
+badge: |
+  [![Git-Storyteller](https://img.shields.io/badge/MCP-Git--Storyteller-6366f1?style=for-the-badge&logo=github)](https://github.com/theanthonyjin/git-storyteller)

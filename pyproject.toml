@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "git-storyteller"
+version = "1.0.0"
+description = "Stop coding in silence. Turn commits into viral updates."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Devease.ai Labs"}
+]
+keywords = ["git", "mcp", "marketing", "automation", "developer-tools"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "fastmcp>=0.1.0",
+    "gitpython>=3.1.40",
+    "tree-sitter>=0.20.0",
+    "playwright>=1.40.0",
+    "pyyaml>=6.0.0",
+    "aiohttp>=3.9.0",
+    "jinja2>=3.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/theanthonyjin/git-storyteller"
+Repository = "https://github.com/theanthonyjin/git-storyteller"
+
+[project.scripts]
+git-storyteller = "git_storyteller.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["git_storyteller*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W"]

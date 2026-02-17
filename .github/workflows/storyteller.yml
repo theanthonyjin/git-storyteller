@@ -1,0 +1,100 @@
+name: Git-Storyteller Auto-Post
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to post to'
+        required: true
+        default: 'twitter'
+        type: choice
+        options:
+          - twitter
+          - linkedin
+          - both
+      template:
+        description: 'Visual template'
+        required: true
+        default: 'bento_metrics'
+        type: choice
+        options:
+          - carbon_x
+          - bento_metrics
+
+permissions:
+  contents: read
+
+jobs:
+  storyteller:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install git-storyteller
+
+      - name: Configure Git-Storyteller
+        run: |
+          mkdir -p ~/.config/git-storyteller
+          cat > ~/.config/git-storyteller/config.yaml << EOF
+          mode: autonomous
+          theme: dark
+          primary_color: "#6366f1"
+          social:
+            twitter:
+              enabled: ${{ contains(github.event.inputs.platform, 'twitter') || 'true' }}
+            linkedin:
+              enabled: ${{ contains(github.event.inputs.platform, 'linkedin') || 'false' }}
+          browser:
+            headless: true
+            screenshot_scale: 2.0
+          entropy:
+            randomize_timing: true
+          EOF
+
+      - name: Generate social media post
+        id: storyteller
+        run: |
+          # Get commit info
+          COMMIT_HASH=${{ github.sha }}
+          COMMIT_AUTHOR="${{ github.actor }}"
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B $COMMIT_HASH)
+
+          # Run analysis (we'll simulate this for now since we can't do full automation)
+          echo "🚀 Just pushed updates to ${{ github.repository }}!"
+          echo ""
+          echo "Commit: $COMMIT_MESSAGE"
+          echo ""
+          echo "View changes: ${{ github.server_url }}/${{ github.repository }}/commit/$COMMIT_HASH"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post to social (manual trigger only)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Posting to ${{ github.event.inputs.platform }}"
+          # This would require OAuth tokens for Twitter/LinkedIn
+          # Store them as repository secrets:
+          # TWITTER_BEARER_TOKEN, LINKEDIN_ACCESS_TOKEN
+
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## 📊 Git-Storyteller Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow**: ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
