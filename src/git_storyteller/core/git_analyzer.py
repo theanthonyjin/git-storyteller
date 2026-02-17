@@ -228,68 +228,63 @@ class GitAnalyzer:
         Returns:
             Compelling tweet content
         """
-        # Start with a hook based on what was actually done
+        # Extract actual, specific changes from commit messages
         recent = impact.recent_changes[:3]
+        real_changes = []
 
-        # Extract actual changes from commit messages
-        changes = []
         for commit in recent:
-            # Parse the commit message for actionable content
             msg = commit.message.lower()
 
-            # Extract key phrases that describe what was done
-            if 'testing' in msg or 'test' in msg:
-                changes.append("✅ Added testing infrastructure with GitHub Actions")
-            elif 'fix' in msg or 'bug' in msg:
-                changes.append("🔧 Fixed bugs and improved stability")
-            elif 'feat' in msg or 'add' in msg:
-                changes.append("✨ Shipped new features")
-            elif 'refactor' in msg:
-                changes.append("♻️  Refactored code for better maintainability")
-            elif 'perf' in msg or 'optimize' in msg:
-                changes.append("⚡ Optimized performance")
-            elif 'doc' in msg:
-                changes.append("📚 Updated documentation")
+            # Only extract REAL, specific changes (not generic)
+            if 'testing' in msg and 'github' in msg:
+                real_changes.append("✅ GitHub Actions CI/CD")
+            elif 'mcp' in msg:
+                real_changes.append("🔌 MCP integration")
+            elif 'browser' in msg or 'playwright' in msg:
+                real_changes.append("🎭 Browser automation")
+            elif 'visual' in msg or 'template' in msg:
+                real_changes.append("🎨 Visual rendering")
+            elif 'api' in msg:
+                real_changes.append("🌐 API endpoints")
+            elif 'auth' in msg:
+                real_changes.append("🔐 Authentication")
+            elif 'database' in msg or 'db' in msg:
+                real_changes.append("🗄️ Database layer")
+            elif 'ui' in msg or 'frontend' in msg:
+                real_changes.append("💄 UI improvements")
 
-        # Fallback if no specific changes extracted
-        if not changes:
-            if len(recent) == 1:
-                changes.append(f"💡 {recent[0].message[:80]}...")
-            else:
-                changes.append(f"🔥 Pushed {len(recent)} updates")
-
-        # Build the tweet
+        # Build the tweet - eyecatching style
         tweet_lines = []
 
-        # Hook line - make it compelling
+        # Hook - make it punchy and eyecatching
         if impact.total_commits <= 5:
-            hook = f"🚀 Just shipped {impact.name} v1.0!"
+            tweet_lines.append(f"🚀 {impact.name} v1.0 is LIVE")
         else:
-            hook = f"🚀 Big updates to {impact.name}!"
-
-        tweet_lines.append(hook)
-        tweet_lines.append("")
-
-        # What it does (value prop) - always include something compelling
-        if impact.description:
-            tweet_lines.append(f"{impact.description}")
-        else:
-            tweet_lines.append(f"Turn commits into viral updates with AI-powered marketing automation.")
+            tweet_lines.append(f"🔥 {impact.name} just got an upgrade")
 
         tweet_lines.append("")
 
-        # Actual changes in plain language
-        for change in changes[:3]:
-            tweet_lines.append(change)
+        # What it does - merged with tech stack
+        tweet_lines.append(f"Turn commits into viral content with AI automation. Built with FastMCP + Playwright + GitPython.")
 
-        # Call to action or stats
         tweet_lines.append("")
-        tweet_lines.append(f"🔥 {impact.total_commits} commits of pure dev productivity")
-        tweet_lines.append("💻 Built with FastMCP + Playwright + GitPython")
 
-        # Hashtags
+        # Real technical changes only (no generic fluff)
+        if real_changes:
+            for change in real_changes[:3]:
+                tweet_lines.append(change)
+        elif len(recent) == 1:
+            # Use actual commit message if no specific pattern matched
+            msg = recent[0].message
+            # Clean up the message
+            for prefix in ['add:', 'fix:', 'feat:', 'chore:']:
+                msg = msg.replace(prefix, '', 1).strip()
+            tweet_lines.append(f"💡 {msg[:80]}")
+
+        # Hashtags - make them pop
         tweet_lines.append("")
-        tweet_lines.append("#DevTools #AI #OpenSource #Python #Automation")
+        tweet_lines.append("👇")
+        tweet_lines.append("#DevTools #AI #OpenSource")
 
         return "\n".join(tweet_lines)
 
