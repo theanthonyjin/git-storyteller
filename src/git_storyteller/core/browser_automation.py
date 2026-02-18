@@ -175,50 +175,86 @@ class BrowserAutomation:
             await self.page.goto("https://twitter.com", wait_until="domcontentloaded", timeout=60000)
             print("  ✓ Page loaded")
 
-            # Wait for page to settle
-            await asyncio.sleep(3.0)
+            # Wait for page to fully load and render
+            await asyncio.sleep(5.0)
 
             # Click the "Post" button on the left to open composer
             print("  🖱️  Clicking 'Post' button to open composer...")
+            composer_opened = False
             try:
+                # Wait a bit more for Twitter's JavaScript to finish loading
+                await asyncio.sleep(2.0)
+
                 # Try multiple selectors for the Post button
                 print("  ℹ️  Looking for Post button...")
                 post_button = await self.page.wait_for_selector(
-                    'a[data-testid="SideNav_NewTweet_Button"], div[data-testid="SideNav_NewTweet_Button"], a[aria-label="Post"], a[href="/compose/tweet"]',
-                    timeout=10000
+                    'a[data-testid="SideNav_NewTweet_Button"], div[data-testid="SideNav_NewTweet_Button"], nav[aria-label] a[href="/compose/tweet"]',
+                    timeout=15000
                 )
                 print("  ✓ Found Post button, clicking...")
                 await post_button.click()
-                await asyncio.sleep(2.0)
+                # Wait longer for composer modal to open and fully render
+                await asyncio.sleep(5.0)
                 print("  ✓ Composer opened")
+                composer_opened = True
             except Exception as e:
                 print(f"  ⚠️  Could not click Post button: {e}")
-                print("  ℹ️  Composer may already be open or page structure changed")
+                print("  ℹ️  Trying to navigate to compose page directly...")
+                # Fallback: navigate directly to compose URL
+                await self.page.goto("https://twitter.com/compose/tweet", timeout=15000)
+                # Wait for compose page to fully load
+                await asyncio.sleep(5.0)
+                print("  ✓ Opened compose page directly")
+                composer_opened = True
 
-            # Fill tweet content
+            # Fill tweet content with retry logic
             print("  ✍️  Filling tweet content...")
-            try:
-                tweet_box = await self.page.wait_for_selector(
-                    'div[contenteditable="true"][data-testid="tweetTextarea_0"]',
-                    timeout=5000
-                )
-                await tweet_box.fill(text)
-                await asyncio.sleep(1.0)
-                print("  ✓ Tweet content filled")
-            except Exception as e:
-                print(f"  ⚠️  Could not fill tweet content: {e}")
+            tweet_filled = False
+            for attempt in range(3):
+                try:
+                    print(f"  ℹ️  Attempt {attempt + 1}/3 to find tweet box...")
+                    tweet_box = await self.page.wait_for_selector(
+                        'div[contenteditable="true"][data-testid="tweetTextarea_0"]',
+                        timeout=10000
+                    )
+                    # Click first to focus, then fill
+                    await tweet_box.click()
+                    await asyncio.sleep(0.5)
+                    await tweet_box.fill(text)
+                    await asyncio.sleep(1.0)
+                    print("  ✓ Tweet content filled")
+                    tweet_filled = True
+                    break
+                except Exception as e:
+                    print(f"  ⚠️  Attempt {attempt + 1} failed: {e}")
+                    if attempt < 2:
+                        print("  ℹ️  Waiting 3 seconds before retry...")
+                        await asyncio.sleep(3.0)
+                    else:
+                        print("  ❌ Could not fill tweet content after 3 attempts")
 
             # Upload image if provided
             if image_path:
                 print(f"  🖼️  Uploading image: {image_path}")
-                try:
-                    # Find the file input
-                    file_input = await self.page.wait_for_selector('input[type="file"]', timeout=5000)
-                    await file_input.set_input_files(str(image_path))
-                    await asyncio.sleep(3.0)  # Wait for upload to complete
-                    print("  ✓ Image uploaded")
-                except Exception as e:
-                    print(f"  ⚠️  Could not upload image: {e}")
+                image_uploaded = False
+                for attempt in range(3):
+                    try:
+                        print(f"  ℹ️  Attempt {attempt + 1}/3 to upload image...")
+                        # Find the file input (may need to look for multiple possibilities)
+                        file_input = await self.page.wait_for_selector('input[type="file"]', timeout=10000)
+                        await file_input.set_input_files(str(image_path))
+                        # Wait for upload to complete
+                        await asyncio.sleep(5.0)
+                        print("  ✓ Image uploaded")
+                        image_uploaded = True
+                        break
+                    except Exception as e:
+                        print(f"  ⚠️  Attempt {attempt + 1} failed: {e}")
+                        if attempt < 2:
+                            print("  ℹ️  Waiting 3 seconds before retry...")
+                            await asyncio.sleep(3.0)
+                        else:
+                            print("  ❌ Could not upload image after 3 attempts")
 
             # Display summary
             separator = "=" * 60
