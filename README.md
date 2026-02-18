@@ -17,6 +17,28 @@ Git-Storyteller is an AI-native marketing agent **for developers**, powered by t
 pip install git-storyteller
 ```
 
+### 🚀 Quick Start (Try it now!)
+
+```bash
+# 1. Install Playwright browsers (one-time setup)
+playwright install chromium
+
+# 2. Log into Twitter/X in your browser
+
+# 3. Run in confirm mode to see it in action
+python scripts/analyze_and_tweet.py --confirm
+
+# 4. Review the tweet and image, then press 'y' to post!
+```
+
+**What happens:**
+- 🔍 Analyzes your recent commits
+- 🎨 Generates a professional image
+- 📝 Writes engaging tweet content
+- 👀 Shows you a preview
+- ⚠️ Asks for your approval
+- 🐦 Posts to Twitter when you say yes!
+
 ### 🛠️ Configure MCP (Claude Desktop)
 
 Add the following to your `claude_desktop_config.json`:
@@ -34,13 +56,67 @@ Add the following to your `claude_desktop_config.json`:
 
 ## 🎯 Usage
 
+### Command Line Interface
+
+The easiest way to use Git-Storyteller is via the command-line script:
+
+```bash
+# Confirm Mode (Recommended) - Preview and approve before posting
+python scripts/analyze_and_tweet.py --confirm
+
+# Test Mode - Preview only, no posting
+python scripts/analyze_and_tweet.py --test
+
+# Auto Mode - Posts automatically without confirmation
+python scripts/analyze_and_tweet.py
+
+# Analyze a specific repository
+python scripts/analyze_and_tweet.py --confirm --repo /path/to/repo
+```
+
+#### Confirm Mode Details
+
+**Recommended for first-time users!** Confirm mode gives you full control:
+
+1. ✅ **Analyzes your repository** - Shows commit history and impact
+2. ✅ **Generates visual asset** - Creates a professional image
+3. ✅ **Crafts tweet content** - Writes engaging copy based on your changes
+4. ✅ **Shows you the preview** - Displays the tweet and image
+5. ⚠️ **Asks for confirmation** - You decide whether to post
+
+```
+============================================================
+  ⚠️  CONFIRMATION REQUIRED
+============================================================
+
+Options:
+  [y] Yes - Post to Twitter now
+  [s] Save - Save content without posting
+  [n] No - Cancel and exit
+
+============================================================
+
+Post to Twitter? (y/s/n):
+```
+
+**What happens in each mode:**
+- **[y] Yes** - Opens browser with your Twitter session, posts the tweet with image
+- **[s] Save** - Saves the tweet text and image to `output/` folder, no posting
+- **[n] No** - Cancels without posting
+
+**Files saved in `output/` directory:**
+- `tweet_visual.png` - Generated image asset
+- `tweet_content.txt` - Tweet text content
+
 ### Basic Workflow
 
 ```
 1. Code something amazing
 2. Commit your changes
-3. Ask Claude: "Turn my recent commits into a viral tweet"
-4. Git-Storyteller analyzes, generates visuals, and posts automatically
+3. Run: python scripts/analyze_and_tweet.py --confirm
+4. Review the generated tweet and image
+5. Press 'y' to post, 's' to save, or 'n' to cancel
+4. Git-Storyteller posts to Twitter using your browser session
 ```
 
 ### MCP Tools
@@ -129,6 +205,22 @@ Minimalist code snapshots with JetBrains Mono font and automatic diff highlighti
 Grid-based dashboard inspired by Apple's marketing materials. Great for showing overall progress and metrics.
 
 ## ⚙️ Configuration
+
+### Browser Setup (Required for Posting)
+
+Git-Storyteller uses your existing browser session to post to Twitter. This is more secure than API keys because:
+
+- ✅ **No API credentials stored** - Uses your logged-in session
+- ✅ **Familiar interface** - You see exactly what's being posted
+- ✅ **Full control** - Confirm mode shows you before posting
+- ✅ **Session reuse** - Your cookies and auth are already there
+
+**Before first use:**
+1. Install Playwright browsers: `playwright install chromium`
+2. Log into Twitter/X in your Chrome browser
+3. Run Git-Storyteller in confirm mode first
+
+### Configuration File
 
 Create `~/.config/git-storyteller/config.yaml`:
 

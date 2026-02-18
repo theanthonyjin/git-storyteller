@@ -428,6 +428,13 @@ class VisualEngine:
             {% endfor %}
         </div>
         {% endif %}
+
+        {% if data.branding %}
+        <div class="card">
+            <div class="card-header">Powered By</div>
+            <div class="metric-label" style="font-size: 14px;">{{ data.branding }}</div>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>
