@@ -180,7 +180,6 @@ class BrowserAutomation:
 
             # Click the "Post" button on the left to open composer
             print("  🖱️  Clicking 'Post' button to open composer...")
-            composer_opened = False
             try:
                 # Wait a bit more for Twitter's JavaScript to finish loading
                 await asyncio.sleep(2.0)
@@ -196,7 +195,6 @@ class BrowserAutomation:
                 # Wait longer for composer modal to open and fully render
                 await asyncio.sleep(5.0)
                 print("  ✓ Composer opened")
-                composer_opened = True
             except Exception as e:
                 print(f"  ⚠️  Could not click Post button: {e}")
                 print("  ℹ️  Trying to navigate to compose page directly...")
@@ -205,12 +203,10 @@ class BrowserAutomation:
                 # Wait for compose page to fully load
                 await asyncio.sleep(5.0)
                 print("  ✓ Opened compose page directly")
-                composer_opened = True
 
             # Fill tweet content with retry logic
             print("  ✍️  Filling tweet content...")
             print(f"  ℹ️  Current URL: {self.page.url}")
-            tweet_filled = False
             for attempt in range(3):
                 try:
                     print(f"  ℹ️  Attempt {attempt + 1}/3 to find tweet box...")
@@ -232,7 +228,7 @@ class BrowserAutomation:
                             if tweet_box:
                                 print(f"  ✓ Found element with selector: {selector}")
                                 break
-                        except:
+                        except Exception:
                             continue
 
                     if not tweet_box:
@@ -248,7 +244,6 @@ class BrowserAutomation:
                     await tweet_box.type(text, delay=10)
                     await asyncio.sleep(1.0)
                     print("  ✓ Tweet content filled")
-                    tweet_filled = True
                     break
                 except Exception as e:
                     print(f"  ⚠️  Attempt {attempt + 1} failed: {e}")
@@ -266,7 +261,6 @@ class BrowserAutomation:
             # Upload image if provided
             if image_path:
                 print(f"  🖼️  Uploading image: {image_path}")
-                image_uploaded = False
                 for attempt in range(3):
                     try:
                         print(f"  ℹ️  Attempt {attempt + 1}/3 to upload image...")
@@ -286,7 +280,7 @@ class BrowserAutomation:
                                 if file_input:
                                     print(f"  ✓ Found file input with selector: {selector}")
                                     break
-                            except:
+                            except Exception:
                                 continue
 
                         if not file_input:
@@ -296,7 +290,6 @@ class BrowserAutomation:
                         # Wait for upload to complete
                         await asyncio.sleep(5.0)
                         print("  ✓ Image uploaded")
-                        image_uploaded = True
                         break
                     except Exception as e:
                         print(f"  ⚠️  Attempt {attempt + 1} failed: {e}")
