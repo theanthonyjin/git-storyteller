@@ -182,15 +182,18 @@ class BrowserAutomation:
             print("  🖱️  Clicking 'Post' button to open composer...")
             try:
                 # Try multiple selectors for the Post button
+                print("  ℹ️  Looking for Post button...")
                 post_button = await self.page.wait_for_selector(
                     'a[data-testid="SideNav_NewTweet_Button"], div[data-testid="SideNav_NewTweet_Button"], a[aria-label="Post"], a[href="/compose/tweet"]',
                     timeout=10000
                 )
+                print("  ✓ Found Post button, clicking...")
                 await post_button.click()
                 await asyncio.sleep(2.0)
                 print("  ✓ Composer opened")
             except Exception as e:
                 print(f"  ⚠️  Could not click Post button: {e}")
+                print("  ℹ️  Composer may already be open or page structure changed")
 
             # Fill tweet content
             print("  ✍️  Filling tweet content...")
