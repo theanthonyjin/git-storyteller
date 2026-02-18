@@ -100,6 +100,9 @@ class BrowserAutomation:
             return False
 
         try:
+            # Create a new page for this tweet
+            await self.new_page()
+
             # Navigate to Twitter
             await self.page.goto("https://twitter.com", wait_until="networkidle")
 
@@ -140,6 +143,13 @@ class BrowserAutomation:
         except Exception as e:
             print(f"❌ Failed to post to Twitter: {e}")
             return False
+        finally:
+            # Close the page to clean up
+            if self.page:
+                try:
+                    await self.page.close()
+                except Exception:
+                    pass
 
     async def post_to_twitter_interactive(
         self,
