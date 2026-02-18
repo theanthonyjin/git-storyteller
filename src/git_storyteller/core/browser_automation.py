@@ -104,7 +104,7 @@ class BrowserAutomation:
             await self.new_page()
 
             # Navigate to Twitter
-            await self.page.goto("https://twitter.com", wait_until="networkidle")
+            await self.page.goto("https://twitter.com", wait_until="domcontentloaded", timeout=60000)
 
             # Wait for user to be logged in (check for tweet composer)
             await asyncio.sleep(self._generate_random_delay())
