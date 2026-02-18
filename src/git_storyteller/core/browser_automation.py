@@ -209,24 +209,54 @@ class BrowserAutomation:
 
             # Fill tweet content with retry logic
             print("  ✍️  Filling tweet content...")
+            print(f"  ℹ️  Current URL: {self.page.url}")
             tweet_filled = False
             for attempt in range(3):
                 try:
                     print(f"  ℹ️  Attempt {attempt + 1}/3 to find tweet box...")
-                    tweet_box = await self.page.wait_for_selector(
+
+                    # Try multiple selectors
+                    selectors = [
                         'div[contenteditable="true"][data-testid="tweetTextarea_0"]',
-                        timeout=10000
-                    )
+                        'div[contenteditable="true"][data-testid="tweetText"]',
+                        'div[data-testid="tweetTextarea_0"]',
+                        'div[role="textbox"][contenteditable="true"]',
+                        'div[contenteditable="true"]',
+                    ]
+
+                    tweet_box = None
+                    for selector in selectors:
+                        try:
+                            print(f"  ℹ️  Trying selector: {selector}")
+                            tweet_box = await self.page.wait_for_selector(selector, timeout=5000)
+                            if tweet_box:
+                                print(f"  ✓ Found element with selector: {selector}")
+                                break
+                        except:
+                            continue
+
+                    if not tweet_box:
+                        raise Exception("Could not find tweet box with any selector")
+
                     # Click first to focus, then fill
                     await tweet_box.click()
                     await asyncio.sleep(0.5)
-                    await tweet_box.fill(text)
+
+                    # Try using type() instead of fill() for more reliable input
+                    await tweet_box.fill('')
+                    await asyncio.sleep(0.3)
+                    await tweet_box.type(text, delay=10)
                     await asyncio.sleep(1.0)
                     print("  ✓ Tweet content filled")
                     tweet_filled = True
                     break
                 except Exception as e:
                     print(f"  ⚠️  Attempt {attempt + 1} failed: {e}")
+                    # Take screenshot for debugging
+                    screenshot_path = f"/tmp/tweet_box_error_attempt_{attempt + 1}.png"
+                    await self.page.screenshot(path=screenshot_path)
+                    print(f"  📸 Screenshot saved to: {screenshot_path}")
+
                     if attempt < 2:
                         print("  ℹ️  Waiting 3 seconds before retry...")
                         await asyncio.sleep(3.0)
@@ -240,8 +270,28 @@ class BrowserAutomation:
                 for attempt in range(3):
                     try:
                         print(f"  ℹ️  Attempt {attempt + 1}/3 to upload image...")
-                        # Find the file input (may need to look for multiple possibilities)
-                        file_input = await self.page.wait_for_selector('input[type="file"]', timeout=10000)
+
+                        # Try multiple selectors for file input
+                        file_selectors = [
+                            'input[type="file"]',
+                            'input[accept="image/*"]',
+                            'input[data-testid="fileInput"]',
+                        ]
+
+                        file_input = None
+                        for selector in file_selectors:
+                            try:
+                                print(f"  ℹ️  Trying file selector: {selector}")
+                                file_input = await self.page.wait_for_selector(selector, timeout=5000)
+                                if file_input:
+                                    print(f"  ✓ Found file input with selector: {selector}")
+                                    break
+                            except:
+                                continue
+
+                        if not file_input:
+                            raise Exception("Could not find file input with any selector")
+
                         await file_input.set_input_files(str(image_path))
                         # Wait for upload to complete
                         await asyncio.sleep(5.0)
